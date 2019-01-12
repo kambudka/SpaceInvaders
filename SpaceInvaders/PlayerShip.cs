@@ -18,7 +18,7 @@ namespace SpaceInvaders
         private static PlayerShip instance = null;
         private static object syncLock = new object();
         Image dynamicImage;
-        private double x, y, z;
+        private double x, y;
         public int life;
         public int armor;
         public int gundmg;
@@ -41,34 +41,36 @@ namespace SpaceInvaders
                 }
             }
         }
-
+        public Design Design
+        {
+            get { return Designs.getDesign("PlayerShip"); }
+        }
 
 
         public void CreateShipDynamically(Canvas mapa)
         {
+            //Inicjalizacja atrybutów statku
+            life = 1;
+            armor = 0;
+            gundmg = 1;
+
+
             dynamicImage = new Image();
             // Create Image and set its width and height  
-            dynamicImage.Width = 150;
-            dynamicImage.Height = 100;
+            dynamicImage.Width = 74;
+            dynamicImage.Height = 79;
             x = 200;
-            y = 200;
+            y = 550-79;
 
-            // Create a BitmapSource  
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(@"E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\inavders.PNG");
-            bitmap.EndInit();
-
-            // Set Image.Source  
-            dynamicImage.Source = bitmap;
+            dynamicImage.Source = Design.texture;
             dynamicImage.Name = "playership";
 
 
             // Add Image to Window  
             mapa.Children.Add(dynamicImage);
 
-            Canvas.SetLeft(dynamicImage, y);
-            Canvas.SetTop(dynamicImage, x);
+            Canvas.SetLeft(dynamicImage, x);
+            Canvas.SetTop(dynamicImage, y);
         }
 
 
@@ -94,20 +96,30 @@ namespace SpaceInvaders
         public void MoveUp()
         {
             //Canvas.SetTop(dynamicImage, 50);
-            y = y - 10;
-            MoveTo(x, y);
         }
         public void MoveDown()
         {
-            Canvas.SetTop(dynamicImage, 250);
+            //Canvas.SetTop(dynamicImage, 250);
         }
         public void MoveLeft()
         {
-            x--;
+            if (x > 10)
+            {
+                x -= 10;
+                Canvas.SetLeft(dynamicImage, x);
+            }
         }
         public void MoveRight()
         {
-            x++;
+            if (x < 690)
+            { 
+            x +=10;
+            Canvas.SetLeft(dynamicImage, x + 10);
+            }
+        }
+        public void ShootGun()
+        {
+            Canvas.SetLeft(dynamicImage, 250);
         }
 
         public void MoveTo(double newX, double newY)

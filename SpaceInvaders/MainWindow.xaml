@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SpaceInvaders"
         mc:Ignorable="d"
         KeyDown="OnTextInputKeyDown"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="800">
        
     <Grid x:Name="Root" KeyDown="OnTextInputKeyDown">
 

@@ -111,5 +111,11 @@
   <ItemGroup>
     <Resource Include="tank.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Cruiser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Destroyer.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

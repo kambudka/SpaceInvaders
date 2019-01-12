@@ -3,10 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 
 namespace SpaceInvaders
 {
-    class Design
+    public class Design
     {
+        string designpath;
+
+        public BitmapImage texture;
+
+        public Design(Uri path,string name)
+        {
+            texture = new BitmapImage();
+            texture.BeginInit();
+            texture.UriSource = path;
+            texture.EndInit();
+        }
+
+        public void Draw(int x,int y)
+        {
+        }
+
     }
 }

@@ -8,5 +8,11 @@ namespace SpaceInvaders
 {
     class EnemyShip
     {
+
+                public string name;
+        public int gundmg;
+        public int armor;
+        public double shipspeed;
+        public string shiptype;
     }
 }

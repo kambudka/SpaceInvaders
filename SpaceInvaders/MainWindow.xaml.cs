@@ -33,20 +33,43 @@ namespace SpaceInvaders
         {
             InitializeComponent();
             PlayerShip nowystatek = new PlayerShip();
-            
+            Designs designs = new Designs();
+
+
+            #region Adding Textures
+            Uri uri = new Uri(@"C:\Users\Zalgo\Source\Repos\SpaceInvaders\SpaceInvaders\Cruiser.PNG");
+            designs.addDesign("Cruiser", uri);
+            uri = new Uri(@"C:\Users\Zalgo\Source\Repos\SpaceInvaders\SpaceInvaders\Destroyer.PNG");
+            designs.addDesign("Destroyer", uri);
+            uri = new Uri(@"C:\Users\Zalgo\Source\Repos\SpaceInvaders\SpaceInvaders\PlayerShip.PNG");
+            designs.addDesign("PlayerShip", uri);
+            #endregion
+
+
+
+            #region Adding Commands
             moveUp = new MoveUp(nowystatek);
             moveDown = new MoveDown(nowystatek);
             moveLeft = new MoveLeft(nowystatek);
             moveRight = new MoveRight(nowystatek);
             commands = new PlayerCommands();
-            
+            #endregion
+
+
             mapa = new Canvas();
             mapa.Width = 800;
-            mapa.Height = 450;
-            mapa.Background = new SolidColorBrush(Colors.LightCyan);
+            mapa.Height = 600;
+            mapa.Background = new SolidColorBrush(Colors.White);
             mapa.Focusable = true;
             Root.Children.Add(mapa);
             nowystatek.CreateShipDynamically(mapa);
+            Cruiser enemy = new Cruiser(mapa);
+            Cruiser enemy2 = new Cruiser(mapa);
+            Destroyer enemy3 = new Destroyer(mapa);
+
+            enemy.MoveTo(50, 50);
+            enemy3.MoveTo(200, 200);
+
 
         }
 
