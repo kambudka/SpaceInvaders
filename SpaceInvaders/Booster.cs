@@ -12,7 +12,7 @@ namespace SpaceInvaders
 {
     public class FlyingBooster
     {
-        // State information used in the task.
+        // Informacje potrzebne do wykonania zadania
         Booster booster;
         double x;
         Random random = new Random();
@@ -21,14 +21,14 @@ namespace SpaceInvaders
         PlayerShip player;
         //iEnemyShip enemyShip;
 
-        // The constructor obtains the state information.
+        // Konstruktor pobiera potrzebne iformacje
         public FlyingBooster(Booster booster, PlayerShip player)
         {
             this.player = player;
             this.booster = booster;
         }
 
-        // The thread performs the task
+        // Wątek wykonuje zadanie
         public void ThreadProc()
         {
             y = 0;
@@ -39,15 +39,15 @@ namespace SpaceInvaders
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     booster.Fly(x, y);
-                    //check collision with player
+                    //sprawdź czy dochodzi do kolizji z graczem
                     if (y > player.y && y < player.y + 50 && x > player.x && x < player.x + 50)
                     {
                         used = true;
-                        if (booster.improvementType == "armor") player.armor += 10; // Add armor for player
+                        if (booster.improvementType == "armor") player.armor += 10; // Dodaj pancerz dla gracza
                         Debug.WriteLine("Added 10 armor: " + player.armor);
-                        if (booster.improvementType == "life") player.life += 10; // Add life for player
+                        if (booster.improvementType == "life") player.life += 10; // Dodaj życie dla gracza
                         Debug.WriteLine("Added 10 life: " + player.life);
-                        if (booster.improvementType == "gun") player.gundmg += 10; // Add gunDmg for player
+                        if (booster.improvementType == "gun") player.gundmg += 10; // Dodaj zadawane obrażenia przez gracza
                         Debug.WriteLine("Boost: " + booster.improvementType);
                     }
                 }));
@@ -56,7 +56,7 @@ namespace SpaceInvaders
                 
                 if (y > 600)
                     used = true;
-                if (used == true) //destroy if out of map
+                if (used == true) //znisz jeśli poza mapą
                 {
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                     {
