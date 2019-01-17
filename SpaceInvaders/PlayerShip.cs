@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,27 +13,26 @@ using System.Windows.Media.Imaging;
 
 namespace SpaceInvaders
 {
-   public class PlayerShip
+    
+
+    public class PlayerShip
     {
 
         MainWindow Form = Application.Current.Windows[0] as MainWindow;
         private static PlayerShip instance = null;
         private static object syncLock = new object();
-        Image dynamicImage;
-        private double x, y;
+        Image texture;
+        public double x, y;
         public int life;
         public int armor;
         public int gundmg;
-
-        public PlayerShip()
+        Canvas mapa;
+        private PlayerShip()
         {
 
         }
-
-        public static PlayerShip Instance
+        public static PlayerShip Instance()
         {
-            get
-            {
                 lock (syncLock)
                 {
                     if (PlayerShip.instance == null)
@@ -39,7 +40,6 @@ namespace SpaceInvaders
 
                     return PlayerShip.instance;
                 }
-            }
         }
         public Design Design
         {
@@ -54,23 +54,22 @@ namespace SpaceInvaders
             armor = 0;
             gundmg = 1;
 
-
-            dynamicImage = new Image();
+            texture = new Image();
             // Create Image and set its width and height  
-            dynamicImage.Width = 74;
-            dynamicImage.Height = 79;
+            texture.Width = 74;
+            texture.Height = 79;
             x = 200;
             y = 550-79;
 
-            dynamicImage.Source = Design.texture;
-            dynamicImage.Name = "playership";
+            texture.Source = Design.texture;
+            texture.Name = "playership";
 
-
+            this.mapa = mapa;
             // Add Image to Window  
-            mapa.Children.Add(dynamicImage);
+            mapa.Children.Add(texture);
 
-            Canvas.SetLeft(dynamicImage, x);
-            Canvas.SetTop(dynamicImage, y);
+            Canvas.SetLeft(texture, x);
+            Canvas.SetTop(texture, y);
         }
 
 
@@ -92,21 +91,14 @@ namespace SpaceInvaders
         }
         #endregion
 
-        #region Movement
-        public void MoveUp()
-        {
-            //Canvas.SetTop(dynamicImage, 50);
-        }
-        public void MoveDown()
-        {
-            //Canvas.SetTop(dynamicImage, 250);
-        }
+        #region Commands
         public void MoveLeft()
         {
             if (x > 10)
             {
                 x -= 10;
-                Canvas.SetLeft(dynamicImage, x);
+                Canvas.SetLeft(texture, x);
+                
             }
         }
         public void MoveRight()
@@ -114,24 +106,17 @@ namespace SpaceInvaders
             if (x < 690)
             { 
             x +=10;
-            Canvas.SetLeft(dynamicImage, x + 10);
+            Canvas.SetLeft(texture, x + 10);
+                Debug.WriteLine(gundmg);
             }
         }
         public void ShootGun()
         {
-            Canvas.SetLeft(dynamicImage, 250);
-        }
-
-        public void MoveTo(double newX, double newY)
-        {
-            var top = Canvas.GetTop(dynamicImage);
-            var left = Canvas.GetLeft(dynamicImage);
-            TranslateTransform trans = new TranslateTransform();
-            dynamicImage.RenderTransform = trans;
-            DoubleAnimation anim1 = new DoubleAnimation(top, newX - top, TimeSpan.FromSeconds(1));
-            //DoubleAnimation anim2 = new DoubleAnimation(left, newY - left, TimeSpan.FromSeconds(1));
-            trans.BeginAnimation(TranslateTransform.XProperty, anim1);
-            //trans.BeginAnimation(TranslateTransform.YProperty, anim2);
+            PlayerMissile miss = new PlayerMissile(mapa);
+            Globals.playerMissiles.Add(miss);
+            FlyingPlayerMissile missile = new FlyingPlayerMissile(miss, this.x, this.y);
+            Thread t = new Thread(new ThreadStart(missile.ThreadProc));
+            t.Start();
         }
         #endregion
     }

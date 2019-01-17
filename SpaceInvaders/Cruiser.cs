@@ -17,33 +17,33 @@ namespace SpaceInvaders
         public string name;
         public int gundmg;
         public int armor;
-        public double shipspeed;
+        public int shipspeed;
         public string shiptype;
-        int x, y;
-        Image dynamicImage;
+        Image texture;
 
         public Design Design
         {
             get { return Designs.getDesign("Cruiser"); }
         }
 
-
+        
         public Cruiser(Canvas mapa)
         {
-            dynamicImage = new Image();
+            shipspeed = 10;
+            texture = new Image();
 
-            dynamicImage.Width = 76;
-            dynamicImage.Height = 91;
+            texture.Width = 76;
+            texture.Height = 91;
 
-            dynamicImage.Source = Design.texture;
-            mapa.Children.Add(dynamicImage);
+            texture.Source = Design.texture;
+            mapa.Children.Add(texture);
         }
 
 
         public void MoveTo(int x, int y)
         {
-            Canvas.SetTop(dynamicImage, y);
-            Canvas.SetLeft(dynamicImage, x);
+            Canvas.SetTop(texture, y);
+            Canvas.SetLeft(texture, x);
         }
 
         public void Shoot(int x, int y)
@@ -56,10 +56,24 @@ namespace SpaceInvaders
 
         }
 
-        public void Test()
+        public int GetArmor()
         {
+            return armor;
+        }
 
-            throw new NotImplementedException();
+        public int GetGunDmg()
+        {
+            return gundmg;
+        }
+
+        public int GetSpeed()
+        {
+            return shipspeed;
+        }
+
+        public Image GetImage()
+        {
+            return this.texture;
         }
     }
 }

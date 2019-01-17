@@ -21,34 +21,6 @@ namespace SpaceInvaders
 
     }
 
-    public class MoveUp : iCommand
-    {
-        private PlayerShip _ship;
-
-        public MoveUp(PlayerShip ship)
-        {
-            _ship = ship;
-        }
-
-        public void doCommand()
-        {
-            _ship.MoveUp();
-        }
-    }
-    public class MoveDown : iCommand
-    {
-        private PlayerShip _ship;
-
-        public MoveDown(PlayerShip ship)
-        {
-            _ship = ship;
-        }
-
-        public void doCommand()
-        {
-            _ship.MoveDown();
-        }
-    }
     public class MoveLeft : iCommand
     {
         private PlayerShip _ship;
@@ -75,6 +47,34 @@ namespace SpaceInvaders
         public void doCommand()
         {
             _ship.MoveRight();
+        }
+    }
+    public class Shoot : iCommand
+    {
+        private PlayerShip _ship;
+
+        public Shoot(PlayerShip ship)
+        {
+            _ship = ship;
+        }
+
+        public void doCommand()
+        {
+            _ship.ShootGun();
+        }
+    }
+    public class Exit : iCommand
+    {
+        private MainWindow _window;
+
+        public Exit(MainWindow window)
+        {
+            _window = window;
+        }
+
+        public void doCommand()
+        {
+            _window.Exit();
         }
     }
 }

@@ -6,9 +6,15 @@
         xmlns:local="clr-namespace:SpaceInvaders"
         mc:Ignorable="d"
         KeyDown="OnTextInputKeyDown"
-        Title="MainWindow" Height="600" Width="800">
+        Title="MainWindow" Height="650" Width="800">
        
     <Grid x:Name="Root" KeyDown="OnTextInputKeyDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock HorizontalAlignment="Left" Grid.Row="1" Text="{Binding playerlife, ElementName=playerlife}"/>
+        <TextBlock x:Name="Koniec" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Text="Koniec rundy"/>
 
     </Grid>
 

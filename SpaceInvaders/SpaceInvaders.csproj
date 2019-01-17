@@ -55,12 +55,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Booster.cs" />
     <Compile Include="Cruiser.cs" />
     <Compile Include="Dekorator.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="EnemyShip.cs" />
     <Compile Include="iCommand.cs" />
+    <Compile Include="Missile.cs" />
     <Compile Include="PlayerCommands.cs" />
+    <Compile Include="PlayerMissile.cs" />
     <Compile Include="ShipFactory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -116,6 +119,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Destroyer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bullet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PlayerShip.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Booster.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Missile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Missile2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

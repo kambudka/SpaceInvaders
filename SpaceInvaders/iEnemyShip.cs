@@ -12,11 +12,12 @@ using System.Windows.Media.Imaging;
 namespace SpaceInvaders
 {
     public interface iEnemyShip
-    {
-        Design Design { get; }
+    {       
         void MoveTo(int x, int y);
-        void Shoot(int x, int y);
-        void Test();
+        int GetArmor();
+        int GetGunDmg();
+        int GetSpeed();
+        Image GetImage();
 
     }
 }

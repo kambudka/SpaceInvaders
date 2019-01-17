@@ -13,8 +13,6 @@ namespace SpaceInvaders
 {
     public class Design
     {
-        string designpath;
-
         public BitmapImage texture;
 
         public Design(Uri path,string name)
@@ -24,10 +22,5 @@ namespace SpaceInvaders
             texture.UriSource = path;
             texture.EndInit();
         }
-
-        public void Draw(int x,int y)
-        {
-        }
-
     }
 }
