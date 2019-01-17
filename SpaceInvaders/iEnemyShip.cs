@@ -18,6 +18,7 @@ namespace SpaceInvaders
         int GetGunDmg();
         int GetSpeed();
         Image GetImage();
-
+        int GetLifes();
+        void RemoveLife(int gundmg);
     }
 }

@@ -20,6 +20,7 @@ namespace SpaceInvaders
         public int shipspeed;
         public string shiptype;
         Image texture;
+        int life;
 
         public Design Design
         {
@@ -30,6 +31,8 @@ namespace SpaceInvaders
         public Cruiser(Canvas mapa)
         {
             shipspeed = 10;
+            life = 10;
+            gundmg = 1;
             texture = new Image();
 
             texture.Width = 76;
@@ -39,6 +42,15 @@ namespace SpaceInvaders
             mapa.Children.Add(texture);
         }
 
+        public int GetLifes()
+        {
+            return life;
+        }
+
+        public void RemoveLife(int gundmg)
+        {
+            life -= gundmg;
+        }
 
         public void MoveTo(int x, int y)
         {

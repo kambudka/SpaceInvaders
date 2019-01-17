@@ -16,9 +16,11 @@ namespace SpaceInvaders
         Booster booster;
         double x;
         Random random = new Random();
-        double y;bool used=false;
+        double y;
+        bool used = false;
         PlayerShip player;
-        
+        //iEnemyShip enemyShip;
+
         // The constructor obtains the state information.
         public FlyingBooster(Booster booster, PlayerShip player)
         {
@@ -26,8 +28,7 @@ namespace SpaceInvaders
             this.booster = booster;
         }
 
-        // The thread procedure performs the task, such as formatting
-        // and printing a document.
+        // The thread performs the task
         public void ThreadProc()
         {
             y = 0;
@@ -38,16 +39,21 @@ namespace SpaceInvaders
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     booster.Fly(x, y);
-                    
+
                     if (y > player.y && y < player.y + 50 && x > player.x && x < player.x + 50)
                     {
                         used = true;
-                        player.gundmg += 10;
-                        
+                        if (booster.improvementType == "armor") player.armor += 10; // Add armor for player
+                        Debug.WriteLine("Added 10 armor: " + player.armor);
+                        if (booster.improvementType == "life") player.life += 10; // Add armor for player
+                        Debug.WriteLine("Added 10 life: " + player.life);
+                        //player = new UpgradeArmor(player, 10);
+                        if (booster.improvementType == "gun") player.gundmg += 10; // Add gunDmg for player
+                        Debug.WriteLine("Boost: " + booster.improvementType);
                     }
                 }));
-                
-                    y += 10;
+
+                y += 10;
 
                 if (y > 600)
                     used = true;
@@ -59,10 +65,8 @@ namespace SpaceInvaders
                     }));
                     break;
                 }
-                    Thread.Sleep(100);
-
+                Thread.Sleep(100);
             }
-
         }
     }
 
@@ -70,12 +74,12 @@ namespace SpaceInvaders
     {
         double x, y;
         public Image dynamicImage;
-        string improvementType;
+        public string improvementType;
         public Design Design
         {
             get { return Designs.getDesign("Booster"); }
         }
-        public Booster(Canvas mapa,string type)
+        public Booster(Canvas mapa, string type)
         {
             improvementType = type;
             Application.Current.Dispatcher.Invoke((Action)(() =>

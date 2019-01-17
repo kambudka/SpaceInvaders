@@ -77,4 +77,18 @@ namespace SpaceInvaders
             _window.Exit();
         }
     }
+    public class ExitWithTable : iCommand
+    {
+        private MainWindow _window;
+
+        public ExitWithTable(MainWindow window)
+        {
+            _window = window;
+        }
+
+        public void doCommand()
+        {
+            _window.Show();
+        }
+    }
 }

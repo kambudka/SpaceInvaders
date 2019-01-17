@@ -21,16 +21,18 @@ namespace SpaceInvaders
         MainWindow Form = Application.Current.Windows[0] as MainWindow;
         private static PlayerShip instance = null;
         private static object syncLock = new object();
-        Image texture;
+        public Image texture;
         public double x, y;
         public int life;
         public int armor;
         public int gundmg;
         Canvas mapa;
+
         private PlayerShip()
         {
 
         }
+
         public static PlayerShip Instance()
         {
                 lock (syncLock)
@@ -50,16 +52,16 @@ namespace SpaceInvaders
         public void CreateShipDynamically(Canvas mapa)
         {
             //Inicjalizacja atrybutów statku
-            life = 1;
-            armor = 0;
-            gundmg = 1;
+            life = 5;
+            armor = 5;
+            gundmg = 5;
 
             texture = new Image();
             // Create Image and set its width and height  
             texture.Width = 74;
             texture.Height = 79;
             x = 200;
-            y = 550-79;
+            y = 530; //550-79;
 
             texture.Source = Design.texture;
             texture.Name = "playership";

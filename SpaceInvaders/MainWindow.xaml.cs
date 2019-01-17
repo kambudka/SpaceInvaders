@@ -26,23 +26,24 @@ namespace SpaceInvaders
     public static class Globals
     {
        public static List<PlayerMissile> playerMissiles;
-        public static int shipCounter = 0; 
-        
+       public static int shipCounter = 0;
+        public static int mapCount = 1;
+        public static int points = 0;
     }
-    public class ThreadWithState
+    public class ThreadShipMissileControl
     {
         // State information used in the task.
         iEnemyShip enemyShip;
         Canvas map;
-        int x;
-        int y;
+        // Wspolrzedne enemyShip:
+        int x, y;
         bool dead=false;
         bool endLine;
         int missileCounter;
         bool isMovingRigth;
         PlayerShip player;
         // The constructor obtains the state information.
-        public ThreadWithState(iEnemyShip enemyShip, int xx, int yy,Canvas map, PlayerShip player)
+        public ThreadShipMissileControl(iEnemyShip enemyShip, int xx, int yy,Canvas map, PlayerShip player)
         {
             this.player = player;
             missileCounter = 1;
@@ -54,8 +55,7 @@ namespace SpaceInvaders
             this.isMovingRigth = true;
         }
 
-        // The thread procedure performs the task, such as formatting
-        // and printing a document.
+        // The thread performs the task
         public void ThreadProc()
         {
 
@@ -70,7 +70,7 @@ namespace SpaceInvaders
                 {
                     endLine = true;
                 }
-                if (x > 600)
+                if (x > 700)
                 {
                     endLine = true;
                 }
@@ -97,16 +97,38 @@ namespace SpaceInvaders
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                    
-                    for(int i = 0;i< Globals.playerMissiles.Count();i++)
-                    if (Globals.playerMissiles[i].y > y-50 && Globals.playerMissiles[i].y < y + 50 && Globals.playerMissiles[i].x > x-50 && Globals.playerMissiles[i].x < x + 50)
-                    {
+                    for(int i = 0;i< Globals.playerMissiles.Count();i++)  
+                        //Check if enemyShip was hitted by player bullet
+                        if (Globals.playerMissiles[i].y > y-50 && Globals.playerMissiles[i].y < y + 50 &&
+                        Globals.playerMissiles[i].x > x-50 && Globals.playerMissiles[i].x < x + 50) // Collision appears
+                        {
+                            //Check how many lifes enemyShip gotS
+                            if(enemyShip.GetLifes() > 0) // If has more than 0 lifes
+                            {
+                                int gundmg = player.gundmg;
+                                enemyShip.RemoveLife(gundmg);  // Remove 1 life
+                                //Debug.WriteLine("EnemyShip lost lifes, now:" + enemyShip.GetLifes());
+                            }
+                            else // If enemyShip has no life destroy him
+                            {
+                                //Debug.WriteLine("EnemyShip destroyed, " + enemyShip.GetLifes());
+                                
+                                enemyShip.GetImage().Source = null;
+                                Globals.points++;
 
+                                MainWindow.main.Dispatcher.Invoke(new Action(delegate ()
+                                {
+                                    MainWindow.main.ScorePoints = Globals.points.ToString();
+                                }));
+                               // MainWindow.main.LifePoints = Globals.points.ToString();
+                                dead = true;
+                                Globals.shipCounter--;
+                                
+                            }
                             Globals.playerMissiles[i].dynamicImage.Source = null;
-                            enemyShip.GetImage().Source = null;
                             Globals.playerMissiles.RemoveAt(i);
-                            dead = true;
-                            Globals.shipCounter--;
-                            break;
+                            if (dead == true)
+                                break;
                         }
                 }));
 
@@ -115,10 +137,10 @@ namespace SpaceInvaders
                 
                 Thread.Sleep(100);
                 missileCounter++;
-                if (missileCounter % 20 == 0)
+                if (missileCounter % 50 == 0) // Pociski enemyShip
                 {
-                    Missile miss = new Missile(map);
-                    FlyingMissile missile = new FlyingMissile(miss, this.x, this.y);
+                    Missile miss = new Missile(map,enemyShip.GetGunDmg());
+                    FlyingMissile missile = new FlyingMissile(miss, this.x, this.y, player);
                     Thread t = new Thread(new ThreadStart(missile.ThreadProc));
                     t.Start();
                 }
@@ -131,11 +153,12 @@ namespace SpaceInvaders
     {
         ShipFactory factory = new ConcreteShipFactory();
         Random random = new Random();
-        int mapCount;
+
         PlayerShip player;
         Canvas mapa;
+        int shipLottery;
         int boosterCounter;
-        public GameMaster(Canvas mapa,PlayerShip player)
+        public GameMaster(Canvas mapa, PlayerShip player)
         {
             this.player = player;
             this.mapa = mapa;
@@ -143,41 +166,107 @@ namespace SpaceInvaders
 
         public void RunGame()
         {
-            mapCount = 1;
-            while(true)
+
+            while (true)
             {
-                
+
                 if (Globals.shipCounter == 0)
                 {
-                    mapCount++;
-                    
-                        for (int i = 0; i < mapCount; i++)
+                    Globals.mapCount++;
+                    if (Globals.mapCount > 2)
                     {
                         Application.Current.Dispatcher.Invoke((Action)(() =>
                         {
-                            iEnemyShip enemy = factory.GetShip(mapa, "Cruiser");
-                           
-                        ThreadWithState tws = new ThreadWithState(enemy, random.Next(1, 400), random.Next(1, 400), mapa, player);
-                        Thread t = new Thread(new ThreadStart(tws.ThreadProc));
-                        t.Start();
-                            iEnemyShip enemy2 = new UpgradeSpeed(factory.GetShip(mapa, "Destroyer"));
-                           
-                            ThreadWithState tws2 = new ThreadWithState(enemy2, random.Next(1, 400), random.Next(1, 400), mapa, player);
-                            Thread t2 = new Thread(new ThreadStart(tws2.ThreadProc));
-                            t2.Start();
+                            mapa.Visibility = Visibility.Hidden;
+                        }));
+                    }
+                    for (int i = 0; i < Globals.mapCount; i++)
+                    {
+                        shipLottery = random.Next(1, 6);
+                        Application.Current.Dispatcher.Invoke((Action)(() =>
+                        {
+
+                            if (shipLottery == 1)
+                            {
+                                iEnemyShip enemy = factory.GetShip(mapa, "Cruiser");
+
+                                ThreadShipMissileControl tws = new ThreadShipMissileControl(enemy, random.Next(20, 400), random.Next(20, 400), mapa, player);
+                                Thread t = new Thread(new ThreadStart(tws.ThreadProc));
+                                t.Start();
+                            }
+                            if (shipLottery == 2)
+                            {
+                                iEnemyShip enemy2 = new UpgradeSpeed(factory.GetShip(mapa, "Destroyer"));
+
+                                ThreadShipMissileControl tws2 = new ThreadShipMissileControl(enemy2, random.Next(20, 400), random.Next(20, 400), mapa, player);
+                                Thread t2 = new Thread(new ThreadStart(tws2.ThreadProc));
+                                t2.Start();
+                            }
+                            if (shipLottery == 3)
+                            {
+                                iEnemyShip enemy = new UpgradeLife(factory.GetShip(mapa, "Cruiser"));
+
+                                ThreadShipMissileControl tws = new ThreadShipMissileControl(enemy, random.Next(20, 400), random.Next(20, 400), mapa, player);
+                                Thread t = new Thread(new ThreadStart(tws.ThreadProc));
+                                t.Start();
+                            }
+                            if (shipLottery == 4)
+                            {
+                                iEnemyShip enemy = new UpgradeGun(factory.GetShip(mapa, "Cruiser"));
+
+                                ThreadShipMissileControl tws = new ThreadShipMissileControl(enemy, random.Next(20, 400), random.Next(20, 400), mapa, player);
+                                Thread t = new Thread(new ThreadStart(tws.ThreadProc));
+                                t.Start();
+                            }
+                            if (shipLottery == 5)
+                            {
+                                iEnemyShip enemy = new UpgradeGun(factory.GetShip(mapa, "Destroyer"));
+
+                                ThreadShipMissileControl tws = new ThreadShipMissileControl(enemy, random.Next(20, 400), random.Next(20, 400), mapa, player);
+                                Thread t = new Thread(new ThreadStart(tws.ThreadProc));
+                                t.Start();
+                            }
+                            if (shipLottery == 6)
+                            {
+                                iEnemyShip enemy = new UpgradeLife(factory.GetShip(mapa, "Cruiser"));
+
+                                ThreadShipMissileControl tws = new ThreadShipMissileControl(enemy, random.Next(20, 400), random.Next(20, 400), mapa, player);
+                                Thread t = new Thread(new ThreadStart(tws.ThreadProc));
+                                t.Start();
+                            }
                         }));
                         Thread.Sleep(200);
                         Globals.shipCounter++;
                     }
-                    
-                    
-                    
-                    
+
+                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                    {
+                        mapa.Visibility = Visibility.Visible;
+                    }));
+
+
                 }
                 boosterCounter++;
-                if (boosterCounter % 50 == 0)
+                if (boosterCounter % 100 == 0)
                 {
+
                     Booster boost = new Booster(mapa, "gun");
+                    FlyingBooster flyingBooster = new FlyingBooster(boost, player);
+                    Thread t = new Thread(new ThreadStart(flyingBooster.ThreadProc));
+                    t.Start();
+                }
+                if (boosterCounter % 150 == 0)
+                {
+
+                    Booster boost = new Booster(mapa, "armor");
+                    FlyingBooster flyingBooster = new FlyingBooster(boost, player);
+                    Thread t = new Thread(new ThreadStart(flyingBooster.ThreadProc));
+                    t.Start();
+                }
+                if (boosterCounter % 200 == 0)
+                {
+
+                    Booster boost = new Booster(mapa, "life");
                     FlyingBooster flyingBooster = new FlyingBooster(boost, player);
                     Thread t = new Thread(new ThreadStart(flyingBooster.ThreadProc));
                     t.Start();
@@ -199,8 +288,11 @@ namespace SpaceInvaders
         iCommand shoot;
         iCommand exit;
         Canvas mapa;
+        TextBlock lifecounter;
+        TextBlock pointscounter;
+        internal static MainWindow main;
+        Dictionary<string, int> highscores;
 
-        
 
         public MainWindow()
         {
@@ -209,6 +301,7 @@ namespace SpaceInvaders
             Globals.playerMissiles = new List<PlayerMissile>();
             PlayerShip statekgracza = PlayerShip.Instance();
             Designs designs = new Designs();
+            highscores = new Dictionary<string, int>();
 
 
             #region Adding Textures
@@ -226,6 +319,7 @@ namespace SpaceInvaders
             designs.addDesign("Booster", uri);
             #endregion
 
+            
 
 
             #region Adding Commands
@@ -236,15 +330,26 @@ namespace SpaceInvaders
             commands = new PlayerCommands();
             #endregion
 
+            #region Adding Scores
+            highscores.Add("Kamil", 20);
+            highscores.Add("Piotr", 30);
+            highscores.Add("Rafał", 40);
+            #endregion
+
 
             #region Initialize Window
+            main = this;
+            LifePoints = "5";
             mapa = new Canvas();
+            lifecounter = LifeCounter;
+            pointscounter = PointCounter;
             mapa.Width = 800;
             mapa.Height = 600;
             mapa.Background = new SolidColorBrush(Colors.White);
             mapa.Focusable = true;
             Grid.SetRow(mapa, 0);
             Grid.SetRow(mapa, 0);
+            Grid.SetColumnSpan(mapa, 6);
             Root.Children.Add(mapa);
             statekgracza.CreateShipDynamically(mapa);
             GameMaster gameMaster = new GameMaster(mapa, statekgracza);
@@ -277,9 +382,92 @@ namespace SpaceInvaders
 
         public void Exit()
         {
-            System.Windows.Application.Current.Shutdown();
+            Environment.Exit(0);
         }
 
+
+        internal string LifePoints
+        {
+            get { return LifeCounter.Text; }
+            set { Dispatcher.Invoke(new Action(() => { LifeCounter.Text = value; })); }
+        }
+
+        internal string ScorePoints
+        {
+            get { return PointCounter.Text; }
+            set { Dispatcher.Invoke(new Action(() => { PointCounter.Text = value; })); }
+        }
+
+        public void SetLifeLabel(int life)
+        {
+            LifeCounter.Text = life.ToString();
+        }
+        public void SetpointLabel(int points)
+        {
+            PointCounter.Text = points.ToString();
+        }
+
+
+        public void AddToScoreBoard(string name, int score)
+        {
+            highscores.Add(name, score);
+        }
+
+
+        public void ShowScoreboard()
+        {
+
+
+            var ordered = highscores.OrderBy(x => x.Value);
+            //highscores = ordered.ToDictionary(string, int);
+            AddToScoreBoard("Twoj wynik", Globals.points);
+            Root.Visibility = Visibility.Hidden;
+            mapa.Visibility = Visibility.Hidden;
+            int ilosc = highscores.Count;
+            RowDefinition newrow;
+            ColumnDefinition c1 = new ColumnDefinition();
+            c1.Width = GridLength.Auto;
+            ColumnDefinition c2 = new ColumnDefinition();
+            c2.Width = GridLength.Auto;
+            ScoreBoard.ColumnDefinitions.Add(c1);
+            ScoreBoard.ColumnDefinitions.Add(c2);
+            newrow = new RowDefinition();
+            newrow.Height = GridLength.Auto;
+            ScoreBoard.RowDefinitions.Add(newrow);
+            Label tabelawynikow = new Label();
+            Grid.SetRow(tabelawynikow, 0);
+            tabelawynikow.Content = "Tabela wyników";
+            Grid.SetColumnSpan(tabelawynikow, 2);
+            ScoreBoard.Children.Add(tabelawynikow);
+            ScoreBoard.Width = 300;
+            for (int i = 0; i < ilosc; i++)
+            {
+                Label nowygracz = new Label();
+                Label nowywynik = new Label();
+                newrow = new RowDefinition();
+                newrow.Height = GridLength.Auto;
+                ScoreBoard.RowDefinitions.Add(newrow);
+                nowygracz.Content = highscores.ElementAt(i).Key;
+                nowywynik.Content = highscores.ElementAt(i).Value;
+                Grid.SetRow(nowygracz, i + 1);
+                Grid.SetColumn(nowygracz, 0);
+                Grid.SetRow(nowywynik, i + 1);
+                Grid.SetColumn(nowywynik, 1);
+                ScoreBoard.Children.Add(nowywynik);
+                ScoreBoard.Children.Add(nowygracz);
+            }
+
+            newrow = new RowDefinition();
+            newrow.Height = GridLength.Auto;
+            ScoreBoard.RowDefinitions.Add(newrow);
+            Label wyjscie = new Label();
+            Grid.SetRow(wyjscie, ilosc + 1);
+            wyjscie.Content = "Aby zakończyć nacisnij ESC";
+            Grid.SetColumnSpan(wyjscie, 2);
+            ScoreBoard.Children.Add(wyjscie);
+            //Root.Visibility = Visibility.Visible;
+            //mapa.Visibility = Visibility.Visible;
+        }
 
     }
 }

@@ -20,8 +20,7 @@ namespace SpaceInvaders
         public int shipspeed;
         public string shiptype;
         Image texture;
-
-
+        int life;
 
         public Design Design
         {
@@ -32,11 +31,23 @@ namespace SpaceInvaders
         {
             texture = new Image();
             shipspeed = 5;
+            life = 20;
+            gundmg = 3;
             texture.Width = 76;
             texture.Height = 91;
 
             texture.Source = Design.texture;
             mapa.Children.Add(texture);
+        }
+
+        public int GetLifes()
+        {
+            return life;
+        }
+
+        public void RemoveLife(int gundmg)
+        {
+            life -= gundmg;
         }
 
         public void MoveTo(int x, int y)

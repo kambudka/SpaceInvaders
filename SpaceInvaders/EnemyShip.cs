@@ -13,5 +13,6 @@ namespace SpaceInvaders
         public int armor;
         public double shipspeed;
         public string shiptype;
+        public int life;
     }
 }

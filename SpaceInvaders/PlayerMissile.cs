@@ -26,8 +26,7 @@ namespace SpaceInvaders
             this.missile = missile;
         }
 
-        // The thread procedure performs the task, such as formatting
-        // and printing a document.
+        // The thread  performs the task
         public void ThreadProc()
         {
             
@@ -50,7 +49,7 @@ namespace SpaceInvaders
                     
                 }));
                 
-                    y -= 10;
+                    y -= 30;
                 
 
                 if (y < 0 || y > 600)

@@ -10,15 +10,29 @@ namespace SpaceInvaders
 {
     abstract class Dekorator : iEnemyShip
     {
-        protected iEnemyShip enemyShip;public int armor, gunDmg; public int shipspeed;
+        protected iEnemyShip enemyShip;
+        public int armor, gunDmg;
+        public int shipspeed;
+        public int life;
+
         public Dekorator(iEnemyShip enemyShip)
         {
             this.enemyShip = enemyShip;
             this.armor = enemyShip.GetArmor();
             this.gunDmg = enemyShip.GetGunDmg();
             this.shipspeed = enemyShip.GetSpeed();
+            this.life = enemyShip.GetLifes();
         }
-        
+
+        public virtual int GetLifes()
+        {
+            return life;
+        }
+
+        public void RemoveLife(int gundmg)
+        {
+            life -= gundmg;
+        }
 
         public virtual int GetArmor()
         {
@@ -50,19 +64,19 @@ namespace SpaceInvaders
             return this.enemyShip.GetImage();
         }
     }
-    class UpgradeArmor : Dekorator
+    class UpgradeLife : Dekorator
     {
-        public UpgradeArmor(iEnemyShip enemyShip) : base(enemyShip) { this.armor += 5; }
+        public UpgradeLife(iEnemyShip enemyShip) : base(enemyShip) { this.life += Globals.mapCount; }
 
 
-        public override int GetArmor()
+        public override int GetLifes()
         {
-            return armor;
+            return life;
         }
     }
     class UpgradeGun : Dekorator
     {
-        public UpgradeGun(iEnemyShip enemyShip) : base(enemyShip) { this.gunDmg += 5; }
+        public UpgradeGun(iEnemyShip enemyShip) : base(enemyShip) { this.gunDmg += Globals.mapCount; }
 
         public override int GetGunDmg()
         {
@@ -71,7 +85,7 @@ namespace SpaceInvaders
     }
     class UpgradeSpeed : Dekorator
     {
-        public UpgradeSpeed(iEnemyShip enemyShip) : base(enemyShip) { this.shipspeed = shipspeed + 20; }
+        public UpgradeSpeed(iEnemyShip enemyShip) : base(enemyShip) { this.shipspeed = shipspeed + Globals.mapCount; }
 
         public override int GetSpeed()
         {  

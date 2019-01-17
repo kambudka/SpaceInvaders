@@ -7,16 +7,33 @@
         mc:Ignorable="d"
         KeyDown="OnTextInputKeyDown"
         Title="MainWindow" Height="650" Width="800">
-       
-    <Grid x:Name="Root" KeyDown="OnTextInputKeyDown">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Left" Grid.Row="1" Text="{Binding playerlife, ElementName=playerlife}"/>
-        <TextBlock x:Name="Koniec" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Text="Koniec rundy"/>
 
-    </Grid>
+    <StackPanel>
+        <Grid x:Name="ScoreBoard" Height='Auto' VerticalAlignment="Center" HorizontalAlignment="Center">
 
+
+        </Grid>
+
+        <Grid x:Name="Root" KeyDown="OnTextInputKeyDown" Height='Auto'>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="Koniec" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="6" Text="Koniec rundy"/>
+            <TextBlock FontSize="40" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="0" Text="Życia: " Panel.ZIndex="100"/>
+            <TextBlock x:Name="LifeCounter"  FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" />
+            <TextBlock FontSize="40" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" Text="  Punkty: "/>
+            <TextBlock x:Name="PointCounter"  FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3"/>
+
+        </Grid>
+    </StackPanel>
 
 </Window>
