@@ -98,21 +98,19 @@ namespace SpaceInvaders
                 {
                    
                     for(int i = 0;i< Globals.playerMissiles.Count();i++)  
-                        //Check if enemyShip was hitted by player bullet
+                        //Sprawdzenie czy przeciwnik zostal trafiony rakietą przez gracza
                         if (Globals.playerMissiles[i].y > y-50 && Globals.playerMissiles[i].y < y + 50 &&
-                        Globals.playerMissiles[i].x > x-50 && Globals.playerMissiles[i].x < x + 50) // Collision appears
+                        Globals.playerMissiles[i].x > x-50 && Globals.playerMissiles[i].x < x + 50) // Wystąpienie kolizji
                         {
-                            //Check how many lifes enemyShip gotS
+                            //Sprawdzenie ile zycia posiada przeciwnik
                             if(enemyShip.GetLifes() > 0) // If has more than 0 lifes
                             {
                                 int gundmg = player.gundmg;
-                                enemyShip.RemoveLife(gundmg);  // Remove 1 life
-                                //Debug.WriteLine("EnemyShip lost lifes, now:" + enemyShip.GetLifes());
+                                enemyShip.RemoveLife(gundmg);  // Usuniecie ilości życia równej obrażeniom gracza
                             }
-                            else // If enemyShip has no life destroy him
+                            else // Jezeli przeciwnik straci cale życie jest niszczony
                             {
-                                //Debug.WriteLine("EnemyShip destroyed, " + enemyShip.GetLifes());
-                                
+
                                 enemyShip.GetImage().Source = null;
                                 Globals.points++;
 
