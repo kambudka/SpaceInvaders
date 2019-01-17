@@ -26,13 +26,13 @@ namespace SpaceInvaders
     public static class Globals
     {
        public static List<PlayerMissile> playerMissiles;
-       public static int shipCounter = 0;//ships on the map
-        public static int mapCount = 1;//number of rounds that started
-        public static int points = 0;//player score
+       public static int shipCounter = 0;//liczba statków na mapie
+        public static int mapCount = 1;//liczba rozpoczętych rund
+        public static int points = 0;//wynik gracza
     }
     public class ThreadShipMissileControl
     {
-        // State information used in the task.
+        // Informacje używane w zadaniu
         iEnemyShip enemyShip;
         Canvas map;
         // Wspolrzedne enemyShip:
@@ -42,7 +42,7 @@ namespace SpaceInvaders
         int missileCounter;
         bool isMovingRigth;
         PlayerShip player;
-        // The constructor obtains the state information.
+        // Konstruktor pobiera potrzebne dane
         public ThreadShipMissileControl(iEnemyShip enemyShip, int xx, int yy,Canvas map, PlayerShip player)
         {
             this.player = player;
@@ -55,7 +55,7 @@ namespace SpaceInvaders
             this.isMovingRigth = true;
         }
 
-        // The thread performs the task
+        // Wątek wykonuje zadanie
         public void ThreadProc()
         {
 
@@ -66,15 +66,15 @@ namespace SpaceInvaders
                 {
                     enemyShip.MoveTo(x, y);
                 }));
-                if (x < 10)//check if ship get to the end of map
+                if (x < 10)//sprawdza czy statek doleciał do końca lini
                 {
                     endLine = true;
                 }
-                if (x > 700)//check if ship get to the end of map
+                if (x > 700)//sprawdza czy statek doleciał do końca lini
                 {
                     endLine = true;
                 }
-                if (endLine == true && isMovingRigth == true)//if get to the end check in what direction he was moving and change it
+                if (endLine == true && isMovingRigth == true)//jeśłi statek doleciał do końca lini sprawdza kierunek w którym leciał i zmienia go
                 {
                     isMovingRigth = false;
                     endLine = false;
@@ -84,11 +84,11 @@ namespace SpaceInvaders
                     isMovingRigth = true;
                     endLine = false;
                 }
-                if (isMovingRigth == true)//ship position for movement
+                if (isMovingRigth == true)//ustalenie następnej pozycji statku
                 {
                     x += enemyShip.GetSpeed();
                 }
-                if (isMovingRigth == false)//ship position for movement
+                if (isMovingRigth == false)//ustalenie następnej pozycji statku
                 {
                     x -= enemyShip.GetSpeed();
                 }
@@ -103,7 +103,7 @@ namespace SpaceInvaders
                         Globals.playerMissiles[i].x > x-50 && Globals.playerMissiles[i].x < x + 50) // Wystąpienie kolizji
                         {
                             //Sprawdzenie ile zycia posiada przeciwnik
-                            if(enemyShip.GetLifes() > 0) // If has more than 0 lifes
+                            if(enemyShip.GetLifes() > 0) 
                             {
                                 int gundmg = player.gundmg;
                                 enemyShip.RemoveLife(gundmg);  // Usuniecie ilości życia równej obrażeniom gracza
@@ -146,7 +146,7 @@ namespace SpaceInvaders
             }
         }
     }
-    //Game master runs the game
+    //Game master prowadzi gre
     public class GameMaster
     {
         ShipFactory factory = new ConcreteShipFactory();
@@ -180,7 +180,7 @@ namespace SpaceInvaders
                     }
                     for (int i = 0; i < Globals.mapCount; i++)
                     {
-                        shipLottery = random.Next(1, 6);//choose  ship to spawn randomly
+                        shipLottery = random.Next(1, 6);//wybierz losowy statek do stworzenia
                         Application.Current.Dispatcher.Invoke((Action)(() =>
                         {
 
@@ -244,7 +244,7 @@ namespace SpaceInvaders
 
 
                 }
-                boosterCounter++;//create boosters after some amount of time
+                boosterCounter++;//tworzenie wzmocnień co określoną ilość czasu
                 if (boosterCounter % 100 == 0)
                 {
 
