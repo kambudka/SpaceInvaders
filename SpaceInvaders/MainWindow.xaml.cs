@@ -26,9 +26,9 @@ namespace SpaceInvaders
     public static class Globals
     {
        public static List<PlayerMissile> playerMissiles;
-       public static int shipCounter = 0;
-        public static int mapCount = 1;
-        public static int points = 0;
+       public static int shipCounter = 0;//ships on the map
+        public static int mapCount = 1;//number of rounds that started
+        public static int points = 0;//player score
     }
     public class ThreadShipMissileControl
     {
@@ -66,15 +66,15 @@ namespace SpaceInvaders
                 {
                     enemyShip.MoveTo(x, y);
                 }));
-                if (x < 10)
+                if (x < 10)//check if ship get to the end of map
                 {
                     endLine = true;
                 }
-                if (x > 700)
+                if (x > 700)//check if ship get to the end of map
                 {
                     endLine = true;
                 }
-                if (endLine == true && isMovingRigth == true)
+                if (endLine == true && isMovingRigth == true)//if get to the end check in what direction he was moving and change it
                 {
                     isMovingRigth = false;
                     endLine = false;
@@ -84,11 +84,11 @@ namespace SpaceInvaders
                     isMovingRigth = true;
                     endLine = false;
                 }
-                if (isMovingRigth == true)
+                if (isMovingRigth == true)//ship position for movement
                 {
                     x += enemyShip.GetSpeed();
                 }
-                if (isMovingRigth == false)
+                if (isMovingRigth == false)//ship position for movement
                 {
                     x -= enemyShip.GetSpeed();
                 }
@@ -98,21 +98,19 @@ namespace SpaceInvaders
                 {
                    
                     for(int i = 0;i< Globals.playerMissiles.Count();i++)  
-                        //Check if enemyShip was hitted by player bullet
+                        //Sprawdzenie czy przeciwnik zostal trafiony rakietą przez gracza
                         if (Globals.playerMissiles[i].y > y-50 && Globals.playerMissiles[i].y < y + 50 &&
-                        Globals.playerMissiles[i].x > x-50 && Globals.playerMissiles[i].x < x + 50) // Collision appears
+                        Globals.playerMissiles[i].x > x-50 && Globals.playerMissiles[i].x < x + 50) // Wystąpienie kolizji
                         {
-                            //Check how many lifes enemyShip gotS
+                            //Sprawdzenie ile zycia posiada przeciwnik
                             if(enemyShip.GetLifes() > 0) // If has more than 0 lifes
                             {
                                 int gundmg = player.gundmg;
-                                enemyShip.RemoveLife(gundmg);  // Remove 1 life
-                                //Debug.WriteLine("EnemyShip lost lifes, now:" + enemyShip.GetLifes());
+                                enemyShip.RemoveLife(gundmg);  // Usuniecie ilości życia równej obrażeniom gracza
                             }
-                            else // If enemyShip has no life destroy him
+                            else // Jezeli przeciwnik straci cale życie jest niszczony
                             {
-                                //Debug.WriteLine("EnemyShip destroyed, " + enemyShip.GetLifes());
-                                
+
                                 enemyShip.GetImage().Source = null;
                                 Globals.points++;
 
@@ -148,7 +146,7 @@ namespace SpaceInvaders
             }
         }
     }
-
+    //Game master runs the game
     public class GameMaster
     {
         ShipFactory factory = new ConcreteShipFactory();
@@ -182,7 +180,7 @@ namespace SpaceInvaders
                     }
                     for (int i = 0; i < Globals.mapCount; i++)
                     {
-                        shipLottery = random.Next(1, 6);
+                        shipLottery = random.Next(1, 6);//choose  ship to spawn randomly
                         Application.Current.Dispatcher.Invoke((Action)(() =>
                         {
 
@@ -246,7 +244,7 @@ namespace SpaceInvaders
 
 
                 }
-                boosterCounter++;
+                boosterCounter++;//create boosters after some amount of time
                 if (boosterCounter % 100 == 0)
                 {
 
